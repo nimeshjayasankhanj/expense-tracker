@@ -20,6 +20,11 @@ export default function ExpenseListApp() {
   const [open, setOpen] = useState(false);
   const [currentMonthIndex, setCurrentMonthIndex] = useState(0);
 
+  // prevent background scroll on iOS when modal open
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "auto";
+  }, [open]);
+
   useEffect(() => {
     const stored = localStorage.getItem("records");
     if (stored) setRecords(JSON.parse(stored));
@@ -56,6 +61,7 @@ export default function ExpenseListApp() {
   const totalMonths = groupedEntries.length;
   const formatDate = (d: string) =>
     new Date(d).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  const formatAmount = (num: number) => num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   const prevMonth = () => setCurrentMonthIndex((i) => (i - 1 + totalMonths) % totalMonths);
   const nextMonth = () => setCurrentMonthIndex((i) => (i + 1) % totalMonths);
@@ -68,7 +74,6 @@ export default function ExpenseListApp() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 p-4 flex flex-col items-center font-sans">
       <div className="w-full max-w-md">
-
         {/* Top Summary Card */}
         <div className="bg-gradient-to-r from-red-400 via-pink-400 to-purple-500 rounded-3xl shadow-xl p-6 mb-6 text-white">
           <div className="flex justify-between items-center mb-2">
@@ -83,10 +88,10 @@ export default function ExpenseListApp() {
             </button>
           </div>
           <h1 className="text-3xl font-bold mt-3">Balance</h1>
-          <p className="text-2xl font-bold mt-1">Rs {totalIncome - totalExpense}</p>
+          <p className="text-2xl font-bold mt-1">Rs {formatAmount(totalIncome - totalExpense)}</p>
           <div className="flex justify-between mt-4">
-            <div className="text-green-200 font-semibold">Income Rs {totalIncome}</div>
-            <div className="text-red-200 font-semibold">(Expense Rs {totalExpense})</div>
+            <div className="text-green-200 font-semibold">Income Rs {formatAmount(totalIncome)}</div>
+            <div className="text-red-200 font-semibold">(Expense Rs {formatAmount(totalExpense)})</div>
           </div>
         </div>
 
@@ -108,7 +113,7 @@ export default function ExpenseListApp() {
               </div>
               <div className="flex items-center gap-3">
                 <span className={`font-bold ${r.type === "income" ? "text-green-600" : "text-red-500"}`}>
-                  {r.type === "income" ? `+ Rs ${r.amount}` : `- Rs ${r.amount}`}
+                  {r.type === "income" ? `+ Rs ${formatAmount(r.amount)}` : `- Rs ${formatAmount(r.amount)}`}
                 </span>
                 <button onClick={() => deleteRecord(r.id)} className="text-gray-400 hover:text-red-500 transition">
                   ✕
@@ -130,7 +135,7 @@ export default function ExpenseListApp() {
       {/* Modal */}
       {open && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-3xl w-full max-w-sm p-6 shadow-xl animate-slide-in">
+          <div className="bg-white rounded-3xl w-full max-w-sm p-6 shadow-xl animate-slide-in overflow-hidden">
             <h2 className="text-xl font-bold mb-4 text-gray-800">Add Record</h2>
             <div className="space-y-3">
               <input
