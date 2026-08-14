@@ -53,9 +53,10 @@ export default function ExpenseListApp() {
   }, [records]);
 
   const addRecord = () => {
-    if (!description || !amount || !date) return;
+    const parsedAmount = Number(amount);
+    if (!description || !date || !amount || isNaN(parsedAmount) || parsedAmount <= 0) return;
     setRecords([
-      { id: Date.now(), description, amount: Number(amount), date },
+      { id: Date.now(), description, amount: parsedAmount, date },
       ...records,
     ]);
     setDescription("");
@@ -216,6 +217,9 @@ export default function ExpenseListApp() {
               />
               <input
                 type="number"
+                inputMode="decimal"
+                min="0"
+                step="0.01"
                 placeholder="Amount (Rs)"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
