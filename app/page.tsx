@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "@heroicons/react/24/solid";
+import { ChevronLeftIcon, ChevronRightIcon, PlusIcon, PencilIcon } from "@heroicons/react/24/solid";
 
 interface ExpenseRecord {
   id: number;
@@ -81,6 +81,16 @@ export default function ExpenseListApp() {
 
   const formatDate = (d: string) =>
     new Date(d).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+
+  const formatDateInputDisplay = (d: string) =>
+    d
+      ? new Date(d + "T00:00:00").toLocaleDateString(undefined, {
+        weekday: "short",
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+      : "Select date";
 
   const formatAmount = (num: number) =>
     num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -211,13 +221,17 @@ export default function ExpenseListApp() {
                 onChange={(e) => setAmount(e.target.value)}
                 className="w-full border rounded-xl p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-400"
               />
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full min-w-0 border rounded-xl p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-400"
-                style={{ boxSizing: "border-box", maxWidth: "100%" }}
-              />
+              <div className="relative inline-flex items-center gap-2 text-gray-800">
+                <span className={date ? "" : "text-gray-400"}>{formatDateInputDisplay(date)}</span>
+                <PencilIcon className="h-4 w-4 text-gray-400 shrink-0" />
+                <input
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  aria-label="Expense date"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+              </div>
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={closeSheet} className="w-1/2 border rounded-xl py-2 shadow-sm">
