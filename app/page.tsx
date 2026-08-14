@@ -11,9 +11,15 @@ interface ExpenseRecord {
 }
 
 export default function ExpenseListApp() {
+  const todayISO = () => {
+    const d = new Date();
+    const offset = d.getTimezoneOffset();
+    return new Date(d.getTime() - offset * 60000).toISOString().slice(0, 10);
+  };
+
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(todayISO());
   const [records, setRecords] = useState<ExpenseRecord[]>([]);
   const [open, setOpen] = useState(false); // mounted in the DOM
   const [visible, setVisible] = useState(false); // slid into view
@@ -54,7 +60,7 @@ export default function ExpenseListApp() {
     ]);
     setDescription("");
     setAmount("");
-    setDate("");
+    setDate(todayISO());
     closeSheet();
     // jump the view back to the month the new expense belongs to
     setCurrentMonthIndex(0);
@@ -209,8 +215,7 @@ export default function ExpenseListApp() {
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full min-w-0 box-border block border rounded-xl p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-400 text-base leading-normal"
-                style={{ height: "48px" }}
+                className="w-full border rounded-xl p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-400"
               />
             </div>
             <div className="flex gap-3 mt-5">
