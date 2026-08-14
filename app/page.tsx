@@ -209,8 +209,8 @@ export default function ExpenseListApp() {
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full min-w-0 box-border block appearance-none border rounded-xl p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-400"
-                style={{ WebkitAppearance: "none" as const }}
+                className="w-full min-w-0 box-border block border rounded-xl p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-400 text-base leading-normal"
+                style={{ height: "48px" }}
               />
             </div>
             <div className="flex gap-3 mt-5">
